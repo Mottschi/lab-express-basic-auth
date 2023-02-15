@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+.warning {
+  background-color: rgb(201, 74, 74);
+  color: white;
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin: 1rem;
+}
