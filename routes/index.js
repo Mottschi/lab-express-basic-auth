@@ -1,9 +1,12 @@
 const router = require("express").Router();
 
-router.use('/', require('./auth.routes'))
+const { isLoggedIn } = require('../middleware/session-status.js');
+
+router.use('/', require('./auth.routes'));
+router.use('/', require('./private.routes'));
 
 /* GET home page */
-router.get("/", (req, res, next) => {
+router.get("/", isLoggedIn, (req, res, next) => {
   res.render("index");
 });
 

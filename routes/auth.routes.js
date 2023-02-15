@@ -1,18 +1,18 @@
 const router = require("express").Router();
-const User = require('../models/User.model');
 const bcrypt = require('bcryptjs');
 
-router.get('/login', (req, res, next)=>{
-    console.log('Session:', req.session);
-    console.log('Cookies', req.cookies);
+const User = require('../models/User.model');
+const { isLoggedIn, isLoggedOut } = require('../middleware/session-status.js');
+
+router.get('/login', isLoggedOut, (req, res, next)=>{
     res.render('auth/login')
 })
 
-router.get('/register', (req, res, next)=>{
+router.get('/register', isLoggedOut, (req, res, next)=>{
     res.render('auth/register')
 });
 
-router.post('/login', async (req, res, next)=>{
+router.post('/login', isLoggedOut, async (req, res, next)=>{
     try {
         const {username, password} = req.body;
         const errorMessages = [];
@@ -38,14 +38,13 @@ router.post('/login', async (req, res, next)=>{
         // At this point, we have verified that the login can proceed - user with the username was found, and the password was correct
         // to remember user is logged in, we now set the current user for this session to the user matching the login data, then forward user to index
         req.session.currentUser = user;
-        console.log(user)
         res.redirect('/')
     } catch (error) {
         next(error);
     }
 })
 
-router.post('/register', async (req, res, next)=>{
+router.post('/register', isLoggedOut, async (req, res, next)=>{
     try {
         const {username, password, confirmation} = req.body;
         const errorMessages = [];
@@ -82,6 +81,14 @@ router.post('/register', async (req, res, next)=>{
     } catch (error) {
         next(error)
     }
+});
+
+// Not part of specification, but to make testing more comfortable, implemented a logout as well
+router.get('/logout', isLoggedIn, (req, res, next)=>{
+    req.session.destroy((error) => {
+        if (error) return next(error);
+        res.redirect('/login');
+    });
 });
 
 module.exports = router;

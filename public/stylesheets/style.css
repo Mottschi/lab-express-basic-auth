@@ -14,3 +14,16 @@ a {
   padding: 0.5rem;
   margin: 1rem;
 }
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+img {
+  width: 100%;
+}
