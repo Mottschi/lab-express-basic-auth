@@ -3,6 +3,8 @@ const User = require('../models/User.model');
 const bcrypt = require('bcryptjs');
 
 router.get('/login', (req, res, next)=>{
+    console.log('Session:', req.session);
+    console.log('Cookies', req.cookies);
     res.render('auth/login')
 })
 
@@ -34,10 +36,12 @@ router.post('/login', async (req, res, next)=>{
         if (errorMessages.length) return res.render('auth/login', {errorMessages});
 
         // At this point, we have verified that the login can proceed - user with the username was found, and the password was correct
-        res.send('hooray')
-
+        // to remember user is logged in, we now set the current user for this session to the user matching the login data, then forward user to index
+        req.session.currentUser = user;
+        console.log(user)
+        res.redirect('/')
     } catch (error) {
-        
+        next(error);
     }
 })
 

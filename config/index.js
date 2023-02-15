@@ -42,5 +42,17 @@ module.exports = (app) => {
   app.use(favicon(path.join(__dirname, "..", "public", "images", "favicon.ico")));
 
 
-  app.use()
+  app.use(
+    session({
+      secret: process.env.SECRET_KEY || 'SecureYourSecretKey!',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      },
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+      })
+    })
+  )
 };
